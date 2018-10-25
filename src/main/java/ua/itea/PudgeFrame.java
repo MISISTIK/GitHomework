@@ -1,19 +1,19 @@
 package ua.itea;
 
-import javafx.scene.layout.Pane;
 import ua.itea.model.Data;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
@@ -24,6 +24,34 @@ public class PudgeFrame extends JFrame {
     private String[] headers = null;
     JTable table = new JTable();
 
+
+    private static PrintWriter pw = null;
+
+    private static void logToFile(String s) {
+        pw.println(s);
+    }
+
+    private static void createLogFile() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
+        String ldate = dtf.format(LocalDate.now());
+
+        try {
+            if (!Files.exists(Paths.get("logs/log_" + ldate + ".txt"))) {
+                Files.createDirectories(Paths.get("logs"));
+                Files.createFile(Paths.get("logs/log_" + ldate + ".txt"));
+            }
+            pw = new PrintWriter(new FileWriter("logs/log_" + ldate + ".txt"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void closeLogFile() {
+        if (pw != null) {
+            pw.close();
+        }
+    }
 
     private void alertError(Exception e) {
         e.printStackTrace();
@@ -204,6 +232,11 @@ public class PudgeFrame extends JFrame {
     }
 
     public static void main(String[] args) {
+        createLogFile();
+        logToFile("================ Program start ==============");
         new PudgeFrame();
+        logToFile("================= Program end ===============");
+        closeLogFile();
+
     }
 }
