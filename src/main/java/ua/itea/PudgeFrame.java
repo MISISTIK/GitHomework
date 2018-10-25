@@ -1,10 +1,6 @@
 package ua.itea;
 
-/**
- * Hello world!
- *
- */
-public class App 
+public class PudgeFrame
 {
     public static void main( String[] args )
     {
